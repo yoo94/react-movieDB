@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
 const config = require('./config/key')
-
+const {auth} = require('./middleware/auth')
 const {User} = require("./models/user")
 
 //application/x-www.form-urlencoded
@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const mongoose = require('mongoose')
+const {auth} = require("./middleware/auth");
 mongoose.connect(config.mongoURI)
     .then(() => console.log('success connect mongoDB...'))
     .catch(err => console.log(err))
@@ -67,10 +68,24 @@ app.post('/login', (req, res) => {
                 })
             }
         )
-
-
     })
+})
 
+
+//auth 라우터 - 토큰을 통해 authenticate 구분
+app.post('/api/users',auth,(req,res)=> {
+//여기까지 미들웨어를 통과해서 왔으면 authentication 이 true라는 말,
+
+    res.status(200).json({
+        _id : req.user._id,
+        isAdmin:req.user.role === 0 ? false : true,
+        isAuth : true,
+        email: req.user.email,
+        name: req.user.name,
+        lastname:req.user.lastname,
+        role: req.user.role,
+        image:req.user.image
+    })
 })
 
 app.listen(port, () => {
