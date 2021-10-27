@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
 const config = require('./config/key')
-const {auth} = require('./middleware/auth')
+const {auth} = require("./middleware/auth");
 const {User} = require("./models/user")
 
 //application/x-www.form-urlencoded
@@ -19,7 +19,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 const mongoose = require('mongoose')
-const {auth} = require("./middleware/auth");
 mongoose.connect(config.mongoURI)
     .then(() => console.log('success connect mongoDB...'))
     .catch(err => console.log(err))
